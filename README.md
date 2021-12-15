@@ -1,3 +1,21 @@
+**__small gift: here is the code: https://github.com/Projects-At-GP/school-messenger__ go and check it out, there are also the docs! This repo won't be used in the future anymore!**
+
+**__small gift: here is the code: https://github.com/Projects-At-GP/school-messenger__ go and check it out, there are also the docs! This repo won't be used in the future anymore!**
+
+**__small gift: here is the code: https://github.com/Projects-At-GP/school-messenger__ go and check it out, there are also the docs! This repo won't be used in the future anymore!**
+
+**__small gift: here is the code: https://github.com/Projects-At-GP/school-messenger__ go and check it out, there are also the docs! This repo won't be used in the future anymore!**
+
+**__small gift: here is the code: https://github.com/Projects-At-GP/school-messenger__ go and check it out, there are also the docs! This repo won't be used in the future anymore!**
+
+**__small gift: here is the code: https://github.com/Projects-At-GP/school-messenger__ go and check it out, there are also the docs! This repo won't be used in the future anymore!**
+
+**__small gift: here is the code: https://github.com/Projects-At-GP/school-messenger__ go and check it out, there are also the docs! This repo won't be used in the future anymore!**
+
+**__small gift: here is the code: https://github.com/Projects-At-GP/school-messenger__ go and check it out, there are also the docs! This repo won't be used in the future anymore!**
+
+**__small gift: here is the code: https://github.com/Projects-At-GP/school-messenger__ go and check it out, there are also the docs! This repo won't be used in the future anymore!**
+
 # School Messenger
 This is a messenger for school, which can be used in the network from school.
 
@@ -6,7 +24,7 @@ All endpoints and specifications can be found in the [Specification](#Specificat
 
 # Info
 The versions `v1` and `v2` (listed in the [WhitePaper](WHITEPAPER.md)) are NOT included in this snapshot.
-They 'll be available next year (2022).
+They 'll be available ~~next year (2022)~~ this year (now).
 
 UPDATE: the code (in DEMO) won't be updated because there are to many changes... (sadly you can't test the rate-limiting)
 
