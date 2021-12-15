@@ -9,6 +9,10 @@
 - [Communication (Client-Server)](#communication)
     - [Request](#request)
     - [Response](#response)
+- [Rate Limit](#rate-limit)
+    - [Reason](#rate-limit-reason)
+    - [Structure](#rate-limit-structure)
+    - [Notes](#rate-limit-notes)
 - [Account](#account)
     - [Info](#account-info)
     - [Create](#create-account)
@@ -22,10 +26,14 @@
     - [Types](#id-types)
 - [Status Codes](#status-codes)
 
+
 ## Connection
 You can connect by just calling the ˝REST˝full-API.
 The HOST and PORT must be provided by the host, but by default you can use the PORT `3333`.
-> Note: at the moment the connection goes over **`HTTP`** and *not* `HTTPS`
+> Note: at the moment the connection goes over **`HTTP`** and *not* `HTTPS`.
+
+All endpoints are listed in this document with their versions and the endpoint no-endpoint (just `/`) provides some
+useful information.
 
 ### Versions
 The API is split into versions to keep "old" clients running, even if the structure of the response ect have changed.
@@ -55,7 +63,44 @@ User-Agent:     SchoolMessengerExamples Python3.9
 The response-content is a `application/json`-response and always provides the field `message`.
 This field is provided to make sure, a status-code won't be misinterpreted
 (e.g. `404` can mean `Page Not Found` or `Entry Not Found`).
+
+Additionally, there is *every time* the `request`-field which provides information about
+the current [rate limit](#rate-limit) for you.
+
 > *All other fields are described in the sections below where you can see how requests and responses are build.*
+
+
+## Rate Limit
+### Rate Limit Reason
+To prevent spamming we decided to add rate limiting, which means that you can send only a limited number of
+requests per time-unit.
+We try to keep the values balanced, so if you use the API normal you shouldn't run into trouble with the system 🙂.
+
+### Rate Limit Structure
+The value of the field `request` looks like this:
+```json
+{
+  "remaining": 60,
+  "limit": 60,
+  "period": 60,
+  "timeout": 0
+}
+```
+The field `remaining` displays the remaining counts of requests you have.
+
+The field `limit` displays you maximum request-count.
+
+The field `period` displays the period (in s) for the `limit`.
+
+The field `timeout` displays the timeout (in s) you have. If you see this value being higher than `0` you should wait
+the amount displayed there.
+
+### Rate Limit Notes
+You should try to sync your rate-limit-data with the data in the response and please respect the remaining requests,
+the timeout-period can be big ^^.
+Noteworthy is that you have while logging in a small limit of requests because there your ip and not your account is
+used to calculate the rate-limit, so look it all up closely.
+
 
 ## Account
 ### Account Info
@@ -210,34 +255,37 @@ The IDs used in the messenger.
 ### ID Technical
 - unsigned 64 bit integer
 
-| Field           | Timestamp (UTC)                                  | Type                          | Increment                        |
-|:----------------|:-------------------------------------------------|:------------------------------|:---------------------------------|
-| **Binary**      | 000000000000000000000000000000000000000000000000 | 00000                         | 00000000000                      |
-| **Bits**        | 63 to 15                                         | 15 to 11                      | 11 to 0                          |
-| **Total Bits**  | 48                                               | 5                             | 11                               |
-| **Description** | ms since `EPOCH`                                 | the type (message, user, ...) | increment to prevent doubled IDs |
-| **Retrieval**   | ( `ID` >> 15 ) + `EPOCH`                         | (`ID` & F800 ) >> 0x1F        | `ID` & 0x7FF                     |
+| Field                   | Timestamp (UTC)                                  | Type                          | Increment                        |
+|:------------------------|:-------------------------------------------------|:------------------------------|:---------------------------------|
+| **Binary**              | 000000000000000000000000000000000000000000000000 | 00000                         | 00000000000                      |
+| **Bits**                | 63 to 15                                         | 15 to 11                      | 11 to 0                          |
+| **Total Bits**          | 48                                               | 5                             | 11                               |
+| **Description**         | ms since `EPOCH`                                 | the type (message, user, ...) | increment to prevent doubled IDs |
+| **Retrieval (decimal)** | ( `ID` >> 16 ) + `EPOCH`                         | (`ID` & 65535 ) >> 31         | `ID` & 2047                      |
+| **Retrieval (hex)**     | ( `ID` >> 0x10) + `EPOCH`                        | (`ID` & 0xffff ) >> 0x1f      | `ID` & 0x7ff                     |
 
 The above-mentioned `EPOCH` is `1609455600000` (UNIX timestamp from *`01/01/2021 00:00`*)
 
 ### ID Types
-| Value | Type      |
-|:-----:|:----------|
-| **0** | undefined |
-| **1** | user      |
-| **2** | message   |
+| Value  | Type      |
+|:------:|:----------|
+| **0**  | undefined |
+| **1**  | user      |
+| **2**  | message   |
+| **31** | admin     |
 
 ## Status Codes
 All used status codes by the messenger:
 
 | Code | Meaning                                             | Everything OK? |
 |:----:|:----------------------------------------------------|:--------------:|
-| 200  | OK                                                  | Yes            |
-| 201  | Created                                             | Yes            |
-| 204  | No Content (nothing to say...)                      | Yes            |
-| 400  | Bad Request (mal formed or missing Header)          | No             |
-| 401  | Unauthorized (missing `Authorization`/`User-Agent`) | No             |
-| 403  | Forbidden                                           | No             |
-| 404  | Not Found                                           | No             |
-| 405  | Method Not Allowed                                  | No             |
-| 5XX  | Internal Server Error (sorry if you see them)       | No             |
+| 200  | OK                                                  |      Yes       |
+| 201  | Created                                             |      Yes       |
+| 204  | No Content (nothing to say...)                      |      Yes       |
+| 400  | Bad Request (mal formed or missing Header)          |       No       |
+| 401  | Unauthorized (missing `Authorization`/`User-Agent`) |       No       |
+| 403  | Forbidden                                           |       No       |
+| 404  | Not Found                                           |       No       |
+| 405  | Method Not Allowed                                  |       No       |
+| 429  | To Many Requests (*respect the rate-limit!*)        |       No       |
+| 5XX  | Internal Server Error (sorry if you see them)       |       No       |
