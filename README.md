@@ -8,6 +8,8 @@ All endpoints and specifications can be found in the [Specification](#Specificat
 The versions `v1` and `v2` (listed in the [WhitePaper](WHITEPAPER.md)) are NOT included in this snapshot.
 They 'll be available next year (2022).
 
+UPDATE: the code (in DEMO) won't be updated because there are to many changes...
+
 It's unclear if we can launch the server next year (again 2022), but we 'll inform you in the file [`Server-Launch`](Server-Launch).
 *The content 'll be set to `false` if we can't launch the server*
 
